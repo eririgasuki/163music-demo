@@ -6,99 +6,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>管理页面</title>
-    <style>
-        .dropbox{
-            width: 300px;
-            height: 300px;
-            border: 1px dashed #ddd;
-            border-radius: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-        }
-    </style>
+    <link rel="stylesheet" href="./css/default.css">
 </head>
 
 <body>
-    <div class="dropbox">
-        点击上传或拖拽文件至此处
-    </div>
-    <input type="file" name="uploadfile" id="ulf" onchange="upload()">
+    <header>
+    </header>
+    <main>
+        <aside>
+            
+        </aside>
+        <div class="uploadArea">
+
+        </div>
+
+    </main>
+
+    <script src="../node_modules/jquery/dist/jquery.min.js"></script>
     <script src="../node_modules/leancloud-storage/dist/av-min.js"></script>
-    <script>
-        var APP_ID = 'R5tckI97eMiftOsbBLGayCnF-gzGzoHsz';
-        var APP_KEY = '7nb8n4iW6lNgjl2zPO62MTQN';
-        AV.init({
-            appId: APP_ID,
-            appKey: APP_KEY
-        });
-    </script>
+    <script src="./js/initializers/av.js"></script>
     <script src="../node_modules/qiniu-js/dist/qiniu.min.js"></script>
-    <script>
-        var config = {
-            useCdnDomain: true,
-            region: undefined
-        };
-        var putExtra = {
-            fname: "",
-            params: {},
-            mimeType: [] || null
-        };
-
-        var dropbox = document.querySelector('.dropbox')
-        dropbox.addEventListener('dragenter', (e) => {
-            e.stopPropagation()
-            e.preventDefault()
-        })
-        dropbox.addEventListener('dragover', (e) => {
-            e.stopPropagation()
-            e.preventDefault()
-        })
-        dropbox.addEventListener('drop', (e) => {
-            e.stopPropagation()
-            e.preventDefault()
-            uploadQiniu(e.dataTransfer.files[0])
-        })
-
-        upload = function () {
-            uploadQiniu(ulf.files[0])
-        }
-
-        function uploadQiniu(upfile) {
-            var file = upfile
-            var key = file.name
-            var request = new XMLHttpRequest()
-            request.open('get', 'http://localhost:8888/uptoken') // 配置request
-            request.send()
-            request.onreadystatechange = () => {
-                if (request.readyState === 4) {
-                    if (request.status >= 200 && request.status < 300) {
-                        var string = request.responseText
-                        var object = window.JSON.parse(string)
-                        console.log('说明请求成功')
-                        var token = object.uptoken
-                        var observable = qiniu.upload(file, key, token, putExtra, config)
-                        var observer = {
-                            next(res) {
-                                console.log(1)
-                            },
-                            error(err) {
-                                console.log(err.reqId)
-                                console.log(err.message)
-                            },
-                            complete(res) {
-                                console.log(3)
-                            }
-                        }
-                        var subscription = observable.subscribe(observer)
-                    } else if (request.status >= 400) {
-                        console.log('说明请求失败')
-                    }
-                }
-            }
-        }
-    </script>
+    <script src="./js/event-hub.js"></script>
+    <script src="./js/song-form.js"></script>
+    <script src="./js/header.js"></script>
+    <script src="./js/song-list.js"></script>
 </body>
 
 </html>
